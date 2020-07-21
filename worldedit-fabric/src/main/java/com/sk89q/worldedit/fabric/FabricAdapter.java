@@ -19,8 +19,6 @@
 
 package com.sk89q.worldedit.fabric;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.collect.ImmutableList;
 import com.sk89q.jnbt.CompoundTag;
 import com.sk89q.jnbt.Tag;
@@ -59,8 +57,9 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-
 import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class FabricAdapter {
 
@@ -160,6 +159,7 @@ public final class FabricAdapter {
         return props;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static net.minecraft.block.BlockState applyProperties(StateManager<Block, net.minecraft.block.BlockState> stateContainer,
                                                                   net.minecraft.block.BlockState newState, Map<Property<?>, Object> states) {
         for (Map.Entry<Property<?>, Object> state : states.entrySet()) {

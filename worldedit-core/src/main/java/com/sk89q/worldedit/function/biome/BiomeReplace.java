@@ -19,8 +19,6 @@
 
 package com.sk89q.worldedit.function.biome;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.extent.Extent;
 import com.sk89q.worldedit.function.FlatRegionFunction;
@@ -30,13 +28,15 @@ import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.world.biome.BiomeType;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Replaces the biome at the locations that this function is applied to.
  */
 public class BiomeReplace implements FlatRegionFunction, RegionFunction {
 
     private final Extent extent;
-    private BiomePattern biome;
+    private final BiomePattern biome;
 
     /**
      * Create a new instance.

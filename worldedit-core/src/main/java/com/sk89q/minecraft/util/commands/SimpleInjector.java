@@ -28,12 +28,12 @@ import java.lang.reflect.InvocationTargetException;
 public class SimpleInjector implements Injector {
 
     private static final Logger log = LoggerFactory.getLogger(SimpleInjector.class);
-    private Object[] args;
-    private Class<?>[] argClasses;
+    private final Object[] args;
+    private final Class<?>[] argClasses;
 
     public SimpleInjector(Object... args) {
         this.args = args;
-        argClasses = new Class[args.length];
+        argClasses = new Class<?>[args.length];
         for (int i = 0; i < args.length; ++i) {
             argClasses[i] = args[i].getClass();
         }

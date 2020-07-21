@@ -17,15 +17,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sk89q.worldedit.fabric.mixin;
+package com.sk89q.worldedit.internal.annotation;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import com.sk89q.worldedit.entity.Player;
+import org.enginehub.piston.inject.InjectAnnotation;
 
-@Mixin(ServerPlayerEntity.class)
-public interface AccessorServerPlayerEntity {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    @Accessor
-    String getClientLanguage();
+/**
+ * Annotates a parameter to indicate it as optional. This is really a bit of a hack, used to
+ * get a {@link Player} or {@code null} instead of throwing.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
+@InjectAnnotation
+public @interface OptionalArg {
 }

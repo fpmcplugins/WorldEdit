@@ -19,20 +19,20 @@
 
 package com.sk89q.worldedit.function.mask;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.sk89q.worldedit.extent.Extent;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.world.block.BlockCategory;
 
 import javax.annotation.Nullable;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A mask that tests whether a block matches a given {@link BlockCategory}, or tag.
  */
 public class BlockCategoryMask extends AbstractExtentMask {
 
-    private BlockCategory category;
+    private final BlockCategory category;
 
     public BlockCategoryMask(Extent extent, BlockCategory category) {
         super(extent);

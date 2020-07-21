@@ -37,8 +37,8 @@ import com.sk89q.worldedit.extension.platform.Actor;
 import com.sk89q.worldedit.extension.platform.Capability;
 import com.sk89q.worldedit.extension.platform.Platform;
 import com.sk89q.worldedit.extent.inventory.BlockBag;
-import com.sk89q.worldedit.internal.command.CommandUtil;
 import com.sk89q.worldedit.internal.anvil.ChunkDeleter;
+import com.sk89q.worldedit.internal.command.CommandUtil;
 import com.sk89q.worldedit.registry.state.Property;
 import com.sk89q.worldedit.world.biome.BiomeType;
 import com.sk89q.worldedit.world.block.BlockCategory;
@@ -70,7 +70,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -84,6 +83,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
+import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.sk89q.worldedit.internal.anvil.ChunkDeleter.DELCHUNKS_FILE_NAME;
@@ -92,6 +92,19 @@ import static com.sk89q.worldedit.internal.anvil.ChunkDeleter.DELCHUNKS_FILE_NAM
  * Plugin for Bukkit.
  */
 public class WorldEditPlugin extends JavaPlugin implements TabCompleter {
+
+    // This must be before the Logger is initialized, which fails in 1.8
+    private static final String FAILED_VERSION_CHECK =
+        "\n**********************************************\n"
+            + "** This Minecraft version (%s) is not supported by this version of WorldEdit.\n"
+            + "** Please download an OLDER version of WorldEdit which does.\n"
+            + "**********************************************\n";
+
+    static {
+        if (PaperLib.getMinecraftVersion() < 13) {
+            throw new IllegalStateException(String.format(FAILED_VERSION_CHECK, Bukkit.getVersion()));
+        }
+    }
 
     private static final Logger log = LoggerFactory.getLogger(WorldEditPlugin.class);
     public static final String CUI_PLUGIN_CHANNEL = "worldedit:cui";
@@ -171,6 +184,7 @@ public class WorldEditPlugin extends JavaPlugin implements TabCompleter {
         WorldEdit.getInstance().getEventBus().post(new PlatformReadyEvent());
     }
 
+    @SuppressWarnings({ "deprecation", "unchecked" })
     private void initializeRegistries() {
         // Biome
         for (Biome biome : Biome.values()) {
@@ -265,9 +279,9 @@ public class WorldEditPlugin extends JavaPlugin implements TabCompleter {
             if (platform instanceof BukkitServerInterface) {
                 log.warn(e.getMessage());
             } else {
-                log.info("WorldEdit could not find a Bukkit adapter for this MC version, " +
-                        "but it seems that you have another implementation of WorldEdit installed (" + platform.getPlatformName() + ") " +
-                        "that handles the world editing.");
+                log.info("WorldEdit could not find a Bukkit adapter for this MC version, "
+                    + "but it seems that you have another implementation of WorldEdit installed (" + platform.getPlatformName() + ") "
+                    + "that handles the world editing.");
             }
         }
     }
@@ -307,7 +321,9 @@ public class WorldEditPlugin extends JavaPlugin implements TabCompleter {
         File actual = new File(getDataFolder(), name);
         if (!actual.exists()) {
             try (InputStream stream = getResource("defaults/" + name)) {
-                if (stream == null) throw new FileNotFoundException();
+                if (stream == null) {
+                    throw new FileNotFoundException();
+                }
                 copyDefaultConfig(stream, actual, name);
             } catch (IOException e) {
                 getLogger().severe("Unable to read default configuration: " + name);
@@ -476,9 +492,12 @@ public class WorldEditPlugin extends JavaPlugin implements TabCompleter {
 
     private class WorldInitListener implements Listener {
         private boolean loaded = false;
+
         @EventHandler(priority = EventPriority.LOWEST)
-        public void onWorldInit(@SuppressWarnings("unused") WorldInitEvent event) {
-            if (loaded) return;
+        public void onWorldInit(WorldInitEvent event) {
+            if (loaded) {
+                return;
+            }
             loaded = true;
             setupWorldData();
         }
@@ -491,11 +510,15 @@ public class WorldEditPlugin extends JavaPlugin implements TabCompleter {
         @SuppressWarnings("UnnecessaryFullyQualifiedName")
         @EventHandler(ignoreCancelled = true)
         public void onAsyncTabComplete(com.destroystokyo.paper.event.server.AsyncTabCompleteEvent event) {
-            if (!event.isCommand()) return;
+            if (!event.isCommand()) {
+                return;
+            }
 
             String buffer = event.getBuffer();
             int firstSpace = buffer.indexOf(' ');
-            if (firstSpace < 1) return;
+            if (firstSpace < 1) {
+                return;
+            }
             String label = buffer.substring(1, firstSpace);
             Plugin owner = server.getDynamicCommands().getCommandOwner(label);
             if (owner != WorldEditPlugin.this) {
@@ -508,7 +531,9 @@ public class WorldEditPlugin extends JavaPlugin implements TabCompleter {
             }
             final Optional<org.enginehub.piston.Command> command
                     = WorldEdit.getInstance().getPlatformManager().getPlatformCommandManager().getCommandManager().getCommand(label);
-            if (!command.isPresent()) return;
+            if (!command.isPresent()) {
+                return;
+            }
 
             CommandSuggestionEvent suggestEvent = new CommandSuggestionEvent(wrapCommandSender(event.getSender()), buffer);
             getWorldEdit().getEventBus().post(suggestEvent);

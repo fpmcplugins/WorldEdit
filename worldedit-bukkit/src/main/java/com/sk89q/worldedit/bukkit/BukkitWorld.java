@@ -23,7 +23,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.blocks.BaseItem;
 import com.sk89q.worldedit.blocks.BaseItemStack;
 import com.sk89q.worldedit.bukkit.adapter.BukkitImplAdapter;
@@ -38,6 +37,7 @@ import com.sk89q.worldedit.util.SideEffect;
 import com.sk89q.worldedit.util.SideEffectSet;
 import com.sk89q.worldedit.util.TreeGenerator;
 import com.sk89q.worldedit.world.AbstractWorld;
+import com.sk89q.worldedit.world.RegenOptions;
 import com.sk89q.worldedit.world.biome.BiomeType;
 import com.sk89q.worldedit.world.block.BaseBlock;
 import com.sk89q.worldedit.world.block.BlockStateHolder;
@@ -55,7 +55,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.slf4j.Logger;
 
-import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -65,6 +64,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -75,9 +75,12 @@ public class BukkitWorld extends AbstractWorld {
     private static final boolean HAS_3D_BIOMES;
 
     private static final Map<Integer, Effect> effects = new HashMap<>();
+
     static {
         for (Effect effect : Effect.values()) {
-            effects.put(effect.getId(), effect);
+            @SuppressWarnings("deprecation")
+            int id = effect.getId();
+            effects.put(id, effect);
         }
 
         boolean temp;
@@ -165,19 +168,6 @@ public class BukkitWorld extends AbstractWorld {
         return checkNotNull(worldRef.get(), "The world was unloaded and the reference is unavailable");
     }
 
-    /**
-     * Get the world handle.
-     *
-     * @return the world
-     */
-    protected World getWorldChecked() throws WorldEditException {
-        World world = worldRef.get();
-        if (world == null) {
-            throw new WorldUnloadedException();
-        }
-        return world;
-    }
-
     @Override
     public String getName() {
         return getWorld().getName();
@@ -190,7 +180,16 @@ public class BukkitWorld extends AbstractWorld {
 
     @Override
     public Path getStoragePath() {
-        return getWorld().getWorldFolder().toPath();
+        Path worldFolder = getWorld().getWorldFolder().toPath();
+        switch (getWorld().getEnvironment()) {
+            case NETHER:
+                return worldFolder.resolve("DIM-1");
+            case THE_END:
+                return worldFolder.resolve("DIM1");
+            case NORMAL:
+            default:
+                return worldFolder;
+        }
     }
 
     @Override
@@ -199,11 +198,11 @@ public class BukkitWorld extends AbstractWorld {
     }
 
     @Override
-    public boolean regenerate(Region region, EditSession editSession) {
+    public boolean regenerate(Region region, EditSession editSession, RegenOptions options) {
         BukkitImplAdapter adapter = WorldEditPlugin.getInstance().getBukkitImplAdapter();
         try {
             if (adapter != null) {
-                return adapter.regenerate(getWorld(), region, editSession);
+                return adapter.regenerate(getWorld(), region, editSession, options);
             } else {
                 throw new UnsupportedOperationException("Missing BukkitImplAdapater for this version.");
             }
@@ -259,7 +258,7 @@ public class BukkitWorld extends AbstractWorld {
     }
 
     /**
-     * An EnumMap that stores which WorldEdit TreeTypes apply to which Bukkit TreeTypes
+     * An EnumMap that stores which WorldEdit TreeTypes apply to which Bukkit TreeTypes.
      */
     private static final EnumMap<TreeGenerator.TreeType, TreeType> treeTypeMapping =
             new EnumMap<>(TreeGenerator.TreeType.class);
@@ -296,6 +295,9 @@ public class BukkitWorld extends AbstractWorld {
     public boolean generateTree(TreeGenerator.TreeType type, EditSession editSession, BlockVector3 pt) {
         World world = getWorld();
         TreeType bukkitType = toBukkitTreeType(type);
+        if (bukkitType == TreeType.CHORUS_PLANT) {
+            pt = pt.add(0, 1, 0); // bukkit skips the feature gen which does this offset normally, so we have to add it back
+        }
         return type != null && world.generateTree(BukkitAdapter.adapt(world, pt), bukkitType,
                 new EditSessionBlockChangeDelegate(editSession));
     }
@@ -340,6 +342,7 @@ public class BukkitWorld extends AbstractWorld {
         return getWorld().getMaxHeight() - 1;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void fixAfterFastMode(Iterable<BlockVector2> chunks) {
         World world = getWorld();
@@ -443,8 +446,8 @@ public class BukkitWorld extends AbstractWorld {
                 return worldNativeAccess.setBlock(position, block, sideEffects);
             } catch (Exception e) {
                 if (block instanceof BaseBlock && ((BaseBlock) block).getNbtData() != null) {
-                    logger.warn("Tried to set a corrupt tile entity at " + position.toString() +
-                        ": " + ((BaseBlock) block).getNbtData(), e);
+                    logger.warn("Tried to set a corrupt tile entity at " + position.toString()
+                        + ": " + ((BaseBlock) block).getNbtData(), e);
                 } else {
                     logger.warn("Failed to set block via adapter, falling back to generic", e);
                 }
@@ -489,7 +492,13 @@ public class BukkitWorld extends AbstractWorld {
         return false;
     }
 
-    @SuppressWarnings("deprecated")
+    @Override
+    public boolean fullySupports3DBiomes() {
+        // Supports if API does and we're not in the overworld
+        return HAS_3D_BIOMES && getWorld().getEnvironment() != World.Environment.NORMAL;
+    }
+
+    @SuppressWarnings("deprecation")
     @Override
     public BiomeType getBiome(BlockVector3 position) {
         if (HAS_3D_BIOMES) {
@@ -499,7 +508,7 @@ public class BukkitWorld extends AbstractWorld {
         }
     }
 
-    @SuppressWarnings("deprecated")
+    @SuppressWarnings("deprecation")
     @Override
     public boolean setBiome(BlockVector3 position, BiomeType biome) {
         if (HAS_3D_BIOMES) {

@@ -19,11 +19,11 @@
 
 package com.sk89q.worldedit.function;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.math.BlockVector3;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Passes calls to {@link #apply(BlockVector3)} to the
@@ -33,7 +33,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 public class RegionMaskingFilter implements RegionFunction {
 
     private final RegionFunction function;
-    private Mask mask;
+    private final Mask mask;
 
     /**
      * Create a new masking filter.

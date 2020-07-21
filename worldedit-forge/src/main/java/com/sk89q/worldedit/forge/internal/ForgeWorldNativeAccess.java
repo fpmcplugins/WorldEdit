@@ -34,12 +34,13 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ChunkHolder;
 import net.minecraft.world.server.ServerChunkProvider;
 
-import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
+import javax.annotation.Nullable;
 
 public class ForgeWorldNativeAccess implements WorldNativeAccess<Chunk, BlockState, BlockPos> {
-    private static final int UPDATE = 1, NOTIFY = 2;
+    private static final int UPDATE = 1;
+    private static final int NOTIFY = 2;
 
     private final WeakReference<World> world;
     private SideEffectSet sideEffectSet;
@@ -121,7 +122,7 @@ public class ForgeWorldNativeAccess implements WorldNativeAccess<Chunk, BlockSta
     public void notifyNeighbors(BlockPos pos, BlockState oldState, BlockState newState) {
         World world = getWorld();
         if (sideEffectSet.shouldApply(SideEffect.EVENTS)) {
-            world.notifyNeighbors(pos, oldState.getBlock());
+            world.notifyNeighborsOfStateChange(pos, oldState.getBlock());
         } else {
             // Manually update each side
             Block block = oldState.getBlock();
@@ -138,11 +139,11 @@ public class ForgeWorldNativeAccess implements WorldNativeAccess<Chunk, BlockSta
     }
 
     @Override
-    public void updateNeighbors(BlockPos pos, BlockState oldState, BlockState newState) {
+    public void updateNeighbors(BlockPos pos, BlockState oldState, BlockState newState, int recursionLimit) {
         World world = getWorld();
-        oldState.updateDiagonalNeighbors(world, pos, NOTIFY);
-        newState.updateNeighbors(world, pos, NOTIFY);
-        newState.updateDiagonalNeighbors(world, pos, NOTIFY);
+        oldState.func_241483_b_(world, pos, NOTIFY, recursionLimit);
+        newState.func_241482_a_(world, pos, NOTIFY, recursionLimit);
+        newState.func_241483_b_(world, pos, NOTIFY, recursionLimit);
     }
 
     @Override

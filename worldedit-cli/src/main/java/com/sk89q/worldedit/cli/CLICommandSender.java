@@ -19,8 +19,6 @@
 
 package com.sk89q.worldedit.cli;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.extension.platform.Actor;
 import com.sk89q.worldedit.internal.cui.CUIEvent;
@@ -35,6 +33,8 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.util.Locale;
 import java.util.UUID;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class CLICommandSender implements Actor {
 
@@ -65,6 +65,7 @@ public class CLICommandSender implements Actor {
     }
 
     @Override
+    @Deprecated
     public void printRaw(String msg) {
         for (String part : msg.split("\n")) {
             sender.info(part);
@@ -77,6 +78,7 @@ public class CLICommandSender implements Actor {
     private static final String ANSI_RESET = "\u001B[0m";
 
     @Override
+    @Deprecated
     public void print(String msg) {
         for (String part : msg.split("\n")) {
             sender.info(ANSI_PURPLE + part + ANSI_RESET);
@@ -84,6 +86,7 @@ public class CLICommandSender implements Actor {
     }
 
     @Override
+    @Deprecated
     public void printDebug(String msg) {
         for (String part : msg.split("\n")) {
             sender.debug(ANSI_GREEN + part + ANSI_RESET);
@@ -91,6 +94,7 @@ public class CLICommandSender implements Actor {
     }
 
     @Override
+    @Deprecated
     public void printError(String msg) {
         for (String part : msg.split("\n")) {
             sender.error(ANSI_RED + part + ANSI_RESET);

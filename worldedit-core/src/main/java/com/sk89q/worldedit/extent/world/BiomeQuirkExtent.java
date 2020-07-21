@@ -17,16 +17,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sk89q.worldedit.forge.proxy;
+package com.sk89q.worldedit.extent.world;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import com.sk89q.worldedit.extent.AbstractDelegateExtent;
+import com.sk89q.worldedit.extent.Extent;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.biome.BiomeType;
 
-@OnlyIn(Dist.DEDICATED_SERVER)
-public class ServerProxy implements CommonProxy {
+/**
+ * Handles quirks when placing biomes.
+ */
+public class BiomeQuirkExtent extends AbstractDelegateExtent {
 
-    @Override
-    public void registerHandlers() {
+    /**
+     * Create a new instance.
+     *
+     * @param extent the extent
+     */
+    public BiomeQuirkExtent(Extent extent) {
+        super(extent);
     }
 
+    @Override
+    public boolean setBiome(BlockVector3 position, BiomeType biome) {
+        boolean success = false;
+        if (!fullySupports3DBiomes()) {
+            // Also place at Y = 0 for proper handling
+            success = super.setBiome(position.withY(0), biome);
+        }
+        return super.setBiome(position, biome) || success;
+    }
 }

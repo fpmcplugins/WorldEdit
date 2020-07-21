@@ -19,8 +19,6 @@
 
 package com.sk89q.worldedit.sponge;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import com.sk89q.worldedit.EditSession;
@@ -28,13 +26,14 @@ import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.blocks.BaseItemStack;
 import com.sk89q.worldedit.entity.BaseEntity;
 import com.sk89q.worldedit.entity.Entity;
-import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.registry.state.Property;
 import com.sk89q.worldedit.util.Location;
 import com.sk89q.worldedit.world.AbstractWorld;
+import com.sk89q.worldedit.world.RegenOptions;
+import com.sk89q.worldedit.world.WorldUnloadedException;
 import com.sk89q.worldedit.world.biome.BiomeType;
 import com.sk89q.worldedit.world.block.BaseBlock;
 import com.sk89q.worldedit.world.block.BlockStateHolder;
@@ -63,8 +62,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An adapter to Minecraft worlds for WorldEdit.
@@ -94,7 +94,7 @@ public abstract class SpongeWorld extends AbstractWorld {
         if (world != null) {
             return world;
         } else {
-            throw new WorldReferenceLostException("The reference to the world was lost (i.e. the world may have been unloaded)");
+            throw new WorldUnloadedException();
         }
     }
 
@@ -120,8 +120,8 @@ public abstract class SpongeWorld extends AbstractWorld {
 
     @Override
     public String getId() {
-        return getName().replace(" ", "_").toLowerCase(Locale.ROOT) +
-                getWorld().getDimension().getType().getName().toLowerCase(Locale.ROOT);
+        return getName().replace(" ", "_").toLowerCase(Locale.ROOT)
+            + getWorld().getDimension().getType().getName().toLowerCase(Locale.ROOT);
     }
 
     @Override
@@ -182,7 +182,7 @@ public abstract class SpongeWorld extends AbstractWorld {
     }
 
     @Override
-    public boolean regenerate(Region region, EditSession editSession) {
+    public boolean regenerate(Region region, EditSession editSession, RegenOptions options) {
         return false;
     }
 
@@ -336,15 +336,6 @@ public abstract class SpongeWorld extends AbstractWorld {
     @Override
     public BlockVector3 getSpawnPosition() {
         return SpongeAdapter.asBlockVector(getWorld().getSpawnLocation());
-    }
-
-    /**
-     * Thrown when the reference to the world is lost.
-     */
-    private static class WorldReferenceLostException extends WorldEditException {
-        private WorldReferenceLostException(String message) {
-            super(message);
-        }
     }
 
 }

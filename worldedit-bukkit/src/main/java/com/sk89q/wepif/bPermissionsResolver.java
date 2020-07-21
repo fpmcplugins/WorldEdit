@@ -37,7 +37,7 @@ public class bPermissionsResolver implements PermissionsResolver {
 
         return new bPermissionsResolver(server);
     }
-    
+
     private final Server server;
 
     public bPermissionsResolver(Server server) {
@@ -54,6 +54,7 @@ public class bPermissionsResolver implements PermissionsResolver {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean hasPermission(String name, String permission) {
         return hasPermission(server.getOfflinePlayer(name), permission);
     }
@@ -64,11 +65,13 @@ public class bPermissionsResolver implements PermissionsResolver {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean inGroup(String player, String group) {
         return inGroup(server.getOfflinePlayer(player), group);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public String[] getGroups(String player) {
         return getGroups(server.getOfflinePlayer(player));
     }

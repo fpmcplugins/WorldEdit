@@ -26,7 +26,6 @@ import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.blocks.BaseItemStack;
 import com.sk89q.worldedit.entity.BaseEntity;
 import com.sk89q.worldedit.entity.Entity;
-import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.regions.Region;
@@ -46,7 +45,6 @@ import com.sk89q.worldedit.world.weather.WeatherTypes;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.Nullable;
 
 /**
@@ -92,6 +90,11 @@ public class NullWorld extends AbstractWorld {
     }
 
     @Override
+    public boolean fullySupports3DBiomes() {
+        return false;
+    }
+
+    @Override
     public BiomeType getBiome(BlockVector3 position) {
         return BiomeTypes.THE_VOID;
     }
@@ -110,7 +113,7 @@ public class NullWorld extends AbstractWorld {
     }
 
     @Override
-    public boolean regenerate(Region region, EditSession editSession) {
+    public boolean regenerate(Region region, EditSession editSession, RegenOptions options) {
         return false;
     }
 

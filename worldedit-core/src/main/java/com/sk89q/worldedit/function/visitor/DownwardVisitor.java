@@ -19,13 +19,13 @@
 
 package com.sk89q.worldedit.function.visitor;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.sk89q.worldedit.function.RegionFunction;
 import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.math.BlockVector3;
 
 import java.util.Collection;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Visits adjacent points on the same X-Z plane as long as the points
@@ -36,7 +36,7 @@ import java.util.Collection;
  */
 public class DownwardVisitor extends RecursiveVisitor {
 
-    private int baseY;
+    private final int baseY;
 
     /**
      * Create a new visitor.

@@ -19,17 +19,18 @@
 
 package com.sk89q.worldedit.regions;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.collect.Iterators;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.util.formatting.text.TranslatableComponent;
 import com.sk89q.worldedit.world.World;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An intersection of several other regions. Any location that is contained in one
@@ -109,13 +110,13 @@ public class RegionIntersection extends AbstractRegion {
     @Override
     public void expand(BlockVector3... changes) throws RegionOperationException {
         checkNotNull(changes);
-        throw new RegionOperationException("Cannot expand a region intersection");
+        throw new RegionOperationException(TranslatableComponent.of("worldedit.selection.intersection.error.cannot-expand"));
     }
 
     @Override
     public void contract(BlockVector3... changes) throws RegionOperationException {
         checkNotNull(changes);
-        throw new RegionOperationException("Cannot contract a region intersection");
+        throw new RegionOperationException(TranslatableComponent.of("worldedit.selection.intersection.error.cannot-contract"));
     }
 
     @Override
@@ -131,14 +132,9 @@ public class RegionIntersection extends AbstractRegion {
         return false;
     }
 
-    @SuppressWarnings({"unchecked"})
     @Override
     public Iterator<BlockVector3> iterator() {
-        Iterator<BlockVector3>[] iterators = (Iterator<BlockVector3>[]) new Iterator[regions.size()];
-        for (int i = 0; i < regions.size(); i++) {
-            iterators[i] = regions.get(i).iterator();
-        }
-        return Iterators.concat(iterators);
+        return Iterators.concat(Iterators.transform(regions.iterator(), r -> r.iterator()));
     }
 
 }

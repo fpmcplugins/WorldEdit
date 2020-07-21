@@ -27,14 +27,14 @@ import com.sk89q.worldedit.registry.state.Property;
 import com.sk89q.worldedit.world.block.BlockState;
 import com.sk89q.worldedit.world.block.BlockType;
 
-import javax.annotation.Nullable;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 public class BlockStateMask extends AbstractExtentMask {
 
     private final Map<String, String> states;
     private final boolean strict;
-    private Map<BlockType, Map<Property<Object>, Object>> cache = Maps.newHashMap();
+    private final Map<BlockType, Map<Property<Object>, Object>> cache = Maps.newHashMap();
 
     /**
      * Creates a mask that checks if a given block has the desired properties set to the desired value.

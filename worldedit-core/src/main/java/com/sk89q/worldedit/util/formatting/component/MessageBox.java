@@ -19,14 +19,14 @@
 
 package com.sk89q.worldedit.util.formatting.component;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import com.sk89q.worldedit.util.formatting.text.Component;
 import com.sk89q.worldedit.util.formatting.text.TextComponent;
 import com.sk89q.worldedit.util.formatting.text.format.TextColor;
 import com.sk89q.worldedit.util.formatting.text.format.TextDecoration;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Makes for a box with a border above and below.
@@ -35,8 +35,8 @@ public class MessageBox extends TextComponentProducer {
 
     private static final int GUARANTEED_NO_WRAP_CHAT_PAGE_WIDTH = 47;
 
-    private TextComponentProducer contents;
-    private TextColor borderColor;
+    private final TextComponentProducer contents;
+    private final TextColor borderColor;
 
     /**
      * Create a new box.

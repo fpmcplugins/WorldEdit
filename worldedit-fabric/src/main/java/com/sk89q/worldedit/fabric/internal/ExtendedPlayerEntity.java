@@ -17,19 +17,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sk89q.worldedit.forge.proxy;
+package com.sk89q.worldedit.fabric.internal;
 
-import com.sk89q.worldedit.forge.KeyHandler;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
+public interface ExtendedPlayerEntity {
 
-@OnlyIn(Dist.CLIENT)
-public class ClientProxy implements CommonProxy {
-
-    @Override
-    public void registerHandlers() {
-        MinecraftForge.EVENT_BUS.register(new KeyHandler());
-    }
+    String getLanguage();
 
 }

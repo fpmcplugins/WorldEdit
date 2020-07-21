@@ -5,6 +5,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.quality.CheckstyleExtension
 import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.api.tasks.testing.Test
 import org.gradle.external.javadoc.StandardJavadocDocletOptions
@@ -35,9 +36,21 @@ fun Project.applyPlatformAndCoreConfiguration() {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    tasks
+        .withType<JavaCompile>()
+        .matching { it.name == "compileJava" || it.name == "compileTestJava" }
+        .configureEach {
+            val disabledLint = listOf(
+                "processing", "path", "fallthrough", "serial"
+            )
+            options.compilerArgs.addAll(listOf("-Xlint:all") + disabledLint.map { "-Xlint:-$it" })
+            options.isDeprecation = true
+            options.encoding = "UTF-8"
+        }
+
     configure<CheckstyleExtension> {
         configFile = rootProject.file("config/checkstyle/checkstyle.xml")
-        toolVersion = "7.6.1"
+        toolVersion = "8.34"
     }
 
     tasks.withType<Test>().configureEach {
@@ -123,14 +136,14 @@ fun Project.applyShadowConfiguration() {
 }
 
 private val CLASSPATH = listOf("truezip", "truevfs", "js")
-        .map { "$it.jar" }
-        .flatMap { listOf(it, "WorldEdit/$it") }
-        .joinToString(separator = " ")
+    .map { "$it.jar" }
+    .flatMap { listOf(it, "WorldEdit/$it") }
+    .joinToString(separator = " ")
 
 fun Project.addJarManifest(includeClasspath: Boolean = false) {
     tasks.named<Jar>("jar") {
         val attributes = mutableMapOf(
-                "WorldEdit-Version" to project(":worldedit-core").version
+            "WorldEdit-Version" to project(":worldedit-core").version
         )
         if (includeClasspath) {
             attributes["Class-Path"] = CLASSPATH

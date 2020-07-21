@@ -19,13 +19,13 @@
 
 package com.sk89q.worldedit.entity;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.sk89q.jnbt.CompoundTag;
 import com.sk89q.worldedit.world.NbtValued;
 import com.sk89q.worldedit.world.entity.EntityType;
 
 import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Represents a mutable "snapshot" of an entity.
@@ -42,7 +42,7 @@ import javax.annotation.Nullable;
  */
 public class BaseEntity implements NbtValued {
 
-    private EntityType type;
+    private final EntityType type;
     private CompoundTag nbtData;
 
     /**

@@ -25,9 +25,9 @@ import com.google.common.collect.ImmutableSet;
 import com.sk89q.worldedit.UnknownDirectionException;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.entity.Player;
-import com.sk89q.worldedit.extension.platform.Actor;
 import com.sk89q.worldedit.internal.annotation.Direction;
 import com.sk89q.worldedit.internal.annotation.MultiDirection;
+import com.sk89q.worldedit.internal.annotation.OptionalArg;
 import com.sk89q.worldedit.util.formatting.text.Component;
 import com.sk89q.worldedit.util.formatting.text.TextComponent;
 import org.enginehub.piston.CommandManager;
@@ -38,8 +38,8 @@ import org.enginehub.piston.converter.SuccessfulConversion;
 import org.enginehub.piston.inject.InjectedValueAccess;
 import org.enginehub.piston.inject.Key;
 
-import javax.annotation.Nullable;
 import java.util.List;
+import javax.annotation.Nullable;
 
 import static org.enginehub.piston.converter.SuggestionHelper.limitByPrefix;
 
@@ -56,14 +56,14 @@ public abstract class AbstractDirectionConverter<D> implements ArgumentConverter
     }
 
     protected static <D> void register(CommandManager commandManager, AbstractDirectionConverter<D> converter,
-                                   Class<D> keyClass, boolean includeDiagonals) {
+                                       Class<D> keyClass, boolean includeDiagonals) {
         commandManager.registerConverter(
-                Key.of(keyClass, direction(includeDiagonals)),
-                converter
+            Key.of(keyClass, direction(includeDiagonals)),
+            converter
         );
         commandManager.registerConverter(
-                Key.of(keyClass, multiDirection(includeDiagonals)),
-                CommaSeparatedValuesConverter.wrap(converter)
+            Key.of(keyClass, multiDirection(includeDiagonals)),
+            CommaSeparatedValuesConverter.wrap(converter)
         );
     }
 
@@ -93,8 +93,8 @@ public abstract class AbstractDirectionConverter<D> implements ArgumentConverter
 
     @Override
     public ConversionResult<D> convert(String argument, InjectedValueAccess context) {
-        Player player = context.injectedValue(Key.of(Actor.class))
-                .filter(Player.class::isInstance).map(Player.class::cast).orElse(null);
+        Player player = context.injectedValue(Key.of(Player.class, OptionalArg.class))
+            .orElse(null);
         try {
             return SuccessfulConversion.fromSingle(convertDirection(argument, player, includeDiagonals));
         } catch (Exception e) {

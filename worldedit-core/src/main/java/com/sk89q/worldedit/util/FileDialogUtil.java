@@ -25,7 +25,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
@@ -66,8 +65,8 @@ public final class FileDialogUtil {
     }
 
     private static class ExtensionFilter extends FileFilter {
-        private Set<String> exts;
-        private String desc;
+        private final Set<String> exts;
+        private final String desc;
 
         private ExtensionFilter(String[] exts) {
             this.exts = new HashSet<>(Arrays.asList(exts));

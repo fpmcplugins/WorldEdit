@@ -19,11 +19,11 @@
 
 package com.sk89q.worldedit.function;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.function.mask.Mask2D;
 import com.sk89q.worldedit.math.BlockVector2;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Passes calls to {@link #apply(BlockVector2)} to the
@@ -33,7 +33,7 @@ import com.sk89q.worldedit.math.BlockVector2;
 public class FlatRegionMaskingFilter implements FlatRegionFunction {
 
     private final FlatRegionFunction function;
-    private Mask2D mask;
+    private final Mask2D mask;
 
     /**
      * Create a new masking filter.

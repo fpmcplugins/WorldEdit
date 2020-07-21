@@ -39,16 +39,17 @@ import com.sk89q.worldedit.world.block.BlockTypes;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 /**
  * A pickaxe mode that removes floating treetops (logs and leaves not connected
- * to anything else)
+ * to anything else).
  */
 public class FloatingTreeRemover implements BlockTool {
-    private int rangeSq;
+    private final int rangeSq;
 
     public FloatingTreeRemover() {
-        rangeSq = 100*100;
+        rangeSq = 100 * 100;
     }
 
     @Override
@@ -67,7 +68,8 @@ public class FloatingTreeRemover implements BlockTool {
 
     @Override
     public boolean actPrimary(Platform server, LocalConfiguration config,
-            Player player, LocalSession session, Location clicked) {
+                              Player player, LocalSession session, Location clicked,
+                              @Nullable Direction face) {
 
         final World world = (World) clicked.getExtent();
         final BlockState state = world.getBlock(clicked.toVector().toBlockPoint());
@@ -101,7 +103,7 @@ public class FloatingTreeRemover implements BlockTool {
         return true;
     }
 
-    private BlockVector3[] recurseDirections = {
+    private final BlockVector3[] recurseDirections = {
             Direction.NORTH.toBlockVector(),
             Direction.EAST.toBlockVector(),
             Direction.SOUTH.toBlockVector(),

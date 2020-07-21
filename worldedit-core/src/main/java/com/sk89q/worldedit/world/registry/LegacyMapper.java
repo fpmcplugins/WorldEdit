@@ -30,6 +30,7 @@ import com.sk89q.worldedit.extension.factory.BlockFactory;
 import com.sk89q.worldedit.extension.input.InputParseException;
 import com.sk89q.worldedit.extension.input.ParserContext;
 import com.sk89q.worldedit.extension.platform.Capability;
+import com.sk89q.worldedit.internal.Constants;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.util.gson.VectorAdapter;
 import com.sk89q.worldedit.util.io.ResourceLoader;
@@ -40,13 +41,13 @@ import com.sk89q.worldedit.world.item.ItemTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 public final class LegacyMapper {
 
@@ -104,9 +105,9 @@ public final class LegacyMapper {
             // if fixer is available, try using that first, as some old blocks that were renamed share names with new blocks
             if (fixer != null) {
                 try {
-                    String newEntry = fixer.fixUp(DataFixer.FixTypes.BLOCK_STATE, value, 1631);
+                    String newEntry = fixer.fixUp(DataFixer.FixTypes.BLOCK_STATE, value, Constants.DATA_VERSION_MC_1_13_2);
                     state = blockFactory.parseFromInput(newEntry, parserContext).toImmutableState();
-                } catch (InputParseException e) {
+                } catch (InputParseException ignored) {
                 }
             }
 
@@ -114,7 +115,7 @@ public final class LegacyMapper {
             if (state == null) {
                 try {
                     state = blockFactory.parseFromInput(value, parserContext).toImmutableState();
-                } catch (InputParseException e) {
+                } catch (InputParseException ignored) {
                 }
             }
 
@@ -133,7 +134,7 @@ public final class LegacyMapper {
             String value = itemEntry.getValue();
             ItemType type = ItemTypes.get(value);
             if (type == null && fixer != null) {
-                value = fixer.fixUp(DataFixer.FixTypes.ITEM_TYPE, value, 1631);
+                value = fixer.fixUp(DataFixer.FixTypes.ITEM_TYPE, value, Constants.DATA_VERSION_MC_1_13_2);
                 type = ItemTypes.get(value);
             }
             if (type == null) {

@@ -19,17 +19,19 @@
 
 package com.sk89q.worldedit.internal.registry;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.extension.input.InputParseException;
 import com.sk89q.worldedit.extension.input.NoMatchException;
 import com.sk89q.worldedit.extension.input.ParserContext;
+import com.sk89q.worldedit.util.formatting.text.TextComponent;
+import com.sk89q.worldedit.util.formatting.text.TranslatableComponent;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An abstract implementation of a factory for internal usage.
@@ -58,7 +60,9 @@ public abstract class AbstractFactory<E> {
     /**
      * Gets an immutable list of parsers.
      *
+     * <p>
      * To add parsers, use the register method.
+     * </p>
      *
      * @return the parsers
      */
@@ -77,17 +81,17 @@ public abstract class AbstractFactory<E> {
             }
         }
 
-        throw new NoMatchException("No match for '" + input + "'");
+        throw new NoMatchException(TranslatableComponent.of("worldedit.error.no-match", TextComponent.of(input)));
     }
 
     public List<String> getSuggestions(String input) {
         return parsers.stream().flatMap(
-                p -> p.getSuggestions(input)
+            p -> p.getSuggestions(input)
         ).collect(Collectors.toList());
     }
 
     /**
-     * Registers an InputParser to this factory
+     * Registers an InputParser to this factory.
      *
      * @param inputParser The input parser
      */

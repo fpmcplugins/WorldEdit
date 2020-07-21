@@ -39,6 +39,8 @@ import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.mask.MaskIntersection;
 import com.sk89q.worldedit.internal.registry.AbstractFactory;
 import com.sk89q.worldedit.internal.registry.InputParser;
+import com.sk89q.worldedit.util.formatting.text.TextComponent;
+import com.sk89q.worldedit.util.formatting.text.TranslatableComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +82,9 @@ public final class MaskFactory extends AbstractFactory<Mask> {
         final String[] split = input.split(" ");
         if (split.length > 1) {
             String prev = input.substring(0, input.lastIndexOf(" ")) + " ";
-            return super.getSuggestions(split[split.length -1]).stream().map(s -> prev + s).collect(Collectors.toList());
+            return super.getSuggestions(split[split.length - 1]).stream()
+                .map(s -> prev + s)
+                .collect(Collectors.toList());
         }
         return super.getSuggestions(input);
     }
@@ -105,7 +109,7 @@ public final class MaskFactory extends AbstractFactory<Mask> {
 
         switch (masks.size()) {
             case 0:
-                throw new NoMatchException("No match for '" + input + "'");
+                throw new NoMatchException(TranslatableComponent.of("worldedit.error.no-match", TextComponent.of(input)));
             case 1:
                 return masks.get(0);
             default:

@@ -19,8 +19,6 @@
 
 package com.sk89q.worldedit.regions.iterator;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.FlatRegion;
@@ -28,11 +26,13 @@ import com.sk89q.worldedit.regions.FlatRegion;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class FlatRegion3DIterator implements Iterator<BlockVector3> {
 
-    private Iterator<BlockVector2> flatIterator;
-    private int minY;
-    private int maxY;
+    private final Iterator<BlockVector2> flatIterator;
+    private final int minY;
+    private final int maxY;
 
     private BlockVector2 next2D;
     private int nextY;

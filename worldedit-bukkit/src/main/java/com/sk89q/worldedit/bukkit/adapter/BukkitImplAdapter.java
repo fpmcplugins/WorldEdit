@@ -32,6 +32,7 @@ import com.sk89q.worldedit.util.Direction;
 import com.sk89q.worldedit.util.SideEffect;
 import com.sk89q.worldedit.util.formatting.text.Component;
 import com.sk89q.worldedit.world.DataFixer;
+import com.sk89q.worldedit.world.RegenOptions;
 import com.sk89q.worldedit.world.block.BaseBlock;
 import com.sk89q.worldedit.world.block.BlockState;
 import com.sk89q.worldedit.world.block.BlockType;
@@ -43,10 +44,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 /**
  * An interface for adapters of various Bukkit implementations.
@@ -61,7 +62,7 @@ public interface BukkitImplAdapter {
     int getDataVersion();
 
     /**
-     * Get a data fixer, or null if not supported
+     * Get a data fixer, or null if not supported.
      *
      * @return the data fixer
      */
@@ -69,6 +70,8 @@ public interface BukkitImplAdapter {
     DataFixer getDataFixer();
 
     /**
+     * Check if this adapter supports the watchdog.
+     *
      * @return {@code true} if {@link #tickWatchdog()} is implemented
      */
     default boolean supportsWatchdog() {
@@ -220,9 +223,10 @@ public interface BukkitImplAdapter {
      * @param world the world to regen in
      * @param region the region to regen
      * @param session the session to use for setting blocks
+     * @param options the regeneration options
      * @return true on success, false on failure
      */
-    default boolean regenerate(World world, Region region, EditSession session) {
+    default boolean regenerate(World world, Region region, EditSession session, RegenOptions options) {
         throw new UnsupportedOperationException("This adapter does not support regeneration.");
     }
 }

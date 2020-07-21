@@ -91,9 +91,11 @@ public class ExtentBiomeCopy implements FlatRegionFunction, RegionFunction {
     public boolean apply(BlockVector3 position) throws WorldEditException {
         BiomeType biome = source.getBiome(position);
         BlockVector3 orig = position.subtract(from);
-        BlockVector3 transformed = transform.apply(orig.toVector3()).toBlockPoint();
+        BlockVector3 transformed = transform.apply(orig.toVector3())
+            .toBlockPoint()
+            .add(to);
 
-        return destination.setBiome(transformed.add(to), biome);
+        return destination.setBiome(transformed, biome);
     }
 
     @Override

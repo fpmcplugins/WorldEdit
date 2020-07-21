@@ -19,8 +19,6 @@
 
 package com.sk89q.worldedit.extension.platform;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.sk89q.worldedit.blocks.BaseItemStack;
 import com.sk89q.worldedit.entity.BaseEntity;
 import com.sk89q.worldedit.entity.Player;
@@ -39,8 +37,9 @@ import com.sk89q.worldedit.world.gamemode.GameMode;
 
 import java.util.Locale;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 class PlayerProxy extends AbstractPlayerActor {
 
@@ -106,8 +105,8 @@ class PlayerProxy extends AbstractPlayerActor {
     }
 
     @Override
-    public void setPosition(Vector3 pos, float pitch, float yaw) {
-        basePlayer.setPosition(pos, pitch, yaw);
+    public boolean trySetPosition(Vector3 pos, float pitch, float yaw) {
+        return basePlayer.trySetPosition(pos, pitch, yaw);
     }
 
     @Override
@@ -116,21 +115,25 @@ class PlayerProxy extends AbstractPlayerActor {
     }
 
     @Override
+    @Deprecated
     public void printRaw(String msg) {
         basePlayer.print(TextComponent.of(msg));
     }
 
     @Override
+    @Deprecated
     public void printDebug(String msg) {
         basePlayer.printDebug(TextComponent.of(msg));
     }
 
     @Override
+    @Deprecated
     public void print(String msg) {
         basePlayer.printInfo(TextComponent.of(msg));
     }
 
     @Override
+    @Deprecated
     public void printError(String msg) {
         basePlayer.printError(TextComponent.of(msg));
     }

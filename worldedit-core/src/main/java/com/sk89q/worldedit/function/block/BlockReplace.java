@@ -19,13 +19,13 @@
 
 package com.sk89q.worldedit.function.block;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.extent.Extent;
 import com.sk89q.worldedit.function.RegionFunction;
 import com.sk89q.worldedit.function.pattern.Pattern;
 import com.sk89q.worldedit.math.BlockVector3;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Replaces blocks with a given pattern.
@@ -33,7 +33,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 public class BlockReplace implements RegionFunction {
 
     private final Extent extent;
-    private Pattern pattern;
+    private final Pattern pattern;
 
     /**
      * Create a new instance.

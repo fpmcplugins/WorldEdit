@@ -30,7 +30,6 @@ import com.sk89q.worldedit.world.block.BlockType;
 import java.util.Collections;
 import java.util.Map;
 import java.util.OptionalInt;
-
 import javax.annotation.Nullable;
 
 /**
@@ -57,6 +56,8 @@ public class BundledBlockRegistry implements BlockRegistry {
     @Nullable
     @Override
     @Deprecated
+    // dumb_intellij.jpg
+    @SuppressWarnings("deprecation")
     public String getName(BlockType blockType) {
         BundledBlockData.BlockEntry blockEntry = BundledBlockData.getInstance().findById(blockType.getId());
         return blockEntry != null ? blockEntry.localizedName : null;

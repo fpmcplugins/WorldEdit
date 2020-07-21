@@ -19,9 +19,6 @@
 
 package com.sk89q.worldedit.sponge;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.extension.platform.Actor;
 import com.sk89q.worldedit.internal.cui.CUIEvent;
@@ -40,8 +37,10 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 import java.io.File;
 import java.util.Locale;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class SpongeCommandSender implements Actor {
 
@@ -50,8 +49,8 @@ public class SpongeCommandSender implements Actor {
      */
     private static final UUID DEFAULT_ID = UUID.fromString("a233eb4b-4cab-42cd-9fd9-7e7b9a3f74be");
 
-    private CommandSource sender;
-    private SpongeWorldEdit plugin;
+    private final CommandSource sender;
+    private final SpongeWorldEdit plugin;
 
     public SpongeCommandSender(SpongeWorldEdit plugin, CommandSource sender) {
         checkNotNull(plugin);
@@ -72,6 +71,7 @@ public class SpongeCommandSender implements Actor {
         return sender.getName();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void printRaw(String msg) {
         for (String part : msg.split("\n")) {
@@ -96,9 +96,10 @@ public class SpongeCommandSender implements Actor {
 
     @Override
     public void print(Component component) {
-        TextAdapter.sendComponent(sender, WorldEditText.format(component, getLocale()));
+        TextAdapter.sendMessage(sender, WorldEditText.format(component, getLocale()));
     }
 
+    @SuppressWarnings("deprecation")
     private void sendColorized(String msg, TextColor formatting) {
         for (String part : msg.split("\n")) {
             sender.sendMessage(Text.of(formatting, TextSerializers.LEGACY_FORMATTING_CODE.deserialize(part)));
